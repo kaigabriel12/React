@@ -1,31 +1,56 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
-import { spawn } from 'child_process';
+import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 
-const SquareScreen = () => {
-  const [number, setNumber] = useState('');
-  const [square, setSquare] = useState(null);
+const Calculator = () => {
+  const [num1, setNum1] = useState('');
+  const [num2, setNum2] = useState('');
+  const [result, setResult] = useState('');
 
-  const handlePress = () => {
-    const pythonProcess = spawn('python', ['square.py', number]);
-    pythonProcess.stdout.on('data', (data) => {
-      const result = parseInt(data.toString());
-      setSquare(result);
-    });
+  const handleAddition = () => {
+    const sum = parseFloat(num1) + parseFloat(num2);
+    setResult(`Result: ${sum}`);
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
-        value={number}
-        onChangeText={setNumber}
+        style={styles.input}
+        placeholder="Enter number 1"
         keyboardType="numeric"
-        placeholder="Enter a number"
+        value={num1}
+        onChangeText={text => setNum1(text)}
       />
-      <Button title="Calculate Square" onPress={handlePress} />
-      {square && <Text>The square of {number} is {square}</Text>}
+      <TextInput
+        style={styles.input}
+        placeholder="Enter number 2"
+        keyboardType="numeric"
+        value={num2}
+        onChangeText={text => setNum2(text)}
+      />
+      <Button title="Add" onPress={handleAddition} />
+      <Text style={styles.result}>{result}</Text>
     </View>
   );
 };
 
-export default SquareScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    width: 200,
+    height: 40,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  result: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
+
+export default Calculator;
